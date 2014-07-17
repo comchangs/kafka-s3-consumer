@@ -10,14 +10,13 @@ import java.util.UUID;
 
 import kafka.s3.UploadObserver;
 
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 
 public class S3SinkBase {
-	private static final org.slf4j.Logger logger = LoggerFactory
-			.getLogger(App.class);
+	private static final org.apache.log4j.Logger logger = Logger.getLogger(App.class);
 
 	private String bucket;
 	private AmazonS3Client awsClient;
@@ -39,7 +38,7 @@ public class S3SinkBase {
 		this.conf = conf;
 		this.topic = topic;
 
-		dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		dateFormat = new SimpleDateFormat("yyyyMMdd/HH");
 
 		bucket = conf.getS3Bucket();
 		awsClient = new AmazonS3Client(new BasicAWSCredentials(
@@ -55,15 +54,15 @@ public class S3SinkBase {
 
 	private String getKeyPrefix() {
 		Date date = new Date();
-		keyPrefix = conf.getS3Prefix() + "/" + topic + "/"
-				+ dateFormat.format(date) + "/" + topic + "_" + partition + "_";
+		keyPrefix = conf.getS3Prefix() + "/" + topic + "_" + partition + "/"
+				+ dateFormat.format(date) + "/";
 		return keyPrefix;
 	}
 
 	protected void commitChunk(File chunk, long startOffset, long endOffset) {
 		logger.info("Uploading chunk to S3.");
-		String key = getKeyPrefix() + "_" + System.currentTimeMillis() / 1000
-				+ "_" + startOffset + "_" + endOffset + "_" + UUID.randomUUID()
+		String key = getKeyPrefix() /*+ "_" + System.currentTimeMillis() / 1000
+				+ "_"*/ + startOffset + "_" + endOffset + "_" + UUID.randomUUID()
 				+ ".gz";
 		awsClient.putObject(bucket, key, chunk);
 		uploads++;

@@ -7,15 +7,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
 
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 public class GzipSinkStreamHandler implements SinkStreamHandler {
   private static final String FILEPREFIX = "gzipsink";
   private File tmpFile;
   private GZIPOutputStream goutStream;
 
-  private static final org.slf4j.Logger logger = LoggerFactory
-      .getLogger(App.class);
+  private static final org.apache.log4j.Logger logger = Logger.getLogger(App.class);
 
   public GzipSinkStreamHandler() throws IOException {
     super();

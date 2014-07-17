@@ -6,15 +6,12 @@ import java.util.Map;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.Logger;
+import org.apache.log4j.Logger;
 
 public class PropertyConfiguration extends PropertiesConfiguration implements
 		Configuration {
 
-	private static final org.slf4j.Logger logger = LoggerFactory
-			.getLogger(PropertyConfiguration.class);
+	private static final org.apache.log4j.Logger logger = Logger.getLogger(PropertyConfiguration.class);
 
 	// conf property names
 	public static final String ZK_CONNECT_STRING = "zk.connect";
@@ -111,7 +108,7 @@ public class PropertyConfiguration extends PropertiesConfiguration implements
 	}
 
 	public Map<String, Integer> getTopicSizes() {
-		logger.debug("Topic size map {}", getConfigMap(PROP_S3_TOPIC_SIZES)
+		logger.debug("Topic size map " + getConfigMap(PROP_S3_TOPIC_SIZES)
 				.keySet());
 		return getConfigMap(PROP_S3_TOPIC_SIZES);
 	}

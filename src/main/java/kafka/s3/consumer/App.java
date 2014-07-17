@@ -24,12 +24,11 @@ import kafka.message.Message;
 import kafka.message.MessageAndMetadata;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 public class App {
 
-	private static final org.slf4j.Logger logger = LoggerFactory
-			.getLogger(App.class);
+	private static final org.apache.log4j.Logger logger = Logger.getLogger(App.class);
 	private static PropertyConfiguration conf;
 	private static ExecutorService pool;
 	private static ScheduledExecutorService scheduler;
@@ -67,8 +66,7 @@ public class App {
 		}
 
 		assert (workerCount == workers.size());
-		logger.info("Starting workers to archive into {}/{}",
-				conf.getS3Bucket(), conf.getS3Prefix());
+		logger.info("Starting workers to archive into " + conf.getS3Bucket() +"/"+ conf.getS3Prefix());
 		for (ArchivingWorker worker : workers) {
 			logger.info(String.format("  %s", worker));
 			pool.execute(worker);
@@ -108,7 +106,7 @@ public class App {
 
 			props.put("autocommit.enable", "false");
 
-			logger.debug("Zookeeper connect string {}",
+			logger.debug("Zookeeper connect string " +
 					conf.getString(PropertyConfiguration.ZK_CONNECT_STRING));
 			props.put("zk.connect",
 					conf.getString(PropertyConfiguration.ZK_CONNECT_STRING));
@@ -121,7 +119,7 @@ public class App {
 			fetchSize = conf.getString(PropertyConfiguration.DEFAULT_FETCH_SIZE
 					+ "." + topic,
 					conf.getString(PropertyConfiguration.DEFAULT_FETCH_SIZE));
-			logger.info("Fetch size for topic {} set to {}", topic, fetchSize);
+			logger.info("Fetch size for topic "+topic+" set to "+fetchSize);
 			props.put("fetch.size", fetchSize);
 
 			props.put("socket.buffersize",
@@ -152,14 +150,12 @@ public class App {
 					}
 				} else {
 					logger.warn(
-							"Topic {} not found in ConsumerMap / Kafka stream",
-							topic);
+							"Topic "+topic+" not found in ConsumerMap / Kafka stream");
 				}
 			} catch (Exception e) {
 
 				logger.warn(
-						"Critical error in Archiving worker for topic {}. Relaunching thread.",
-						topic, e);
+						"Critical error in Archiving worker for topic "+topic+". Relaunching thread." + e);
 				pool.execute(new ArchivingWorker(topic, partition,
 						masterConfig, pool));
 			}

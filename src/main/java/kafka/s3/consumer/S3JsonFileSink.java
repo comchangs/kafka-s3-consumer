@@ -11,12 +11,11 @@ import java.util.zip.GZIPOutputStream;
 import kafka.message.Message;
 import kafka.message.MessageAndMetadata;
 
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 class S3JsonFileSink extends S3SinkBase implements Sink {
 
-	private static final org.slf4j.Logger logger = LoggerFactory
-			.getLogger(App.class);
+	private static final org.apache.log4j.Logger logger = Logger.getLogger(App.class);
 
 	private int s3MaxObjectSize;
 	private long startOffset;
@@ -32,7 +31,7 @@ class S3JsonFileSink extends S3SinkBase implements Sink {
 
 	private GZIPOutputStream getOutputStream(File tmpFile)
 			throws FileNotFoundException, IOException {
-		logger.debug("Creating gzip output stream for tmpFile: " + tmpFile);
+		logger.info("Creating gzip output stream for tmpFile: " + tmpFile);
 		return new GZIPOutputStream(new FileOutputStream(tmpFile));
 	}
 
@@ -59,7 +58,7 @@ class S3JsonFileSink extends S3SinkBase implements Sink {
 	public long append(MessageAndMetadata<Message> msgAndMetadata)
 			throws IOException {
 		int messageSize = msgAndMetadata.message().payload().remaining();
-		// logger.debug("Appending message with size: " + messageSize);
+		 //logger.info("Appending message with size: " + messageSize);
 
 		if (bytesWritten + messageSize > s3MaxObjectSize) {
 			goutStream.close();
